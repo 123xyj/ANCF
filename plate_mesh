@@ -1,0 +1,45 @@
+clc;
+clear;
+
+%板长宽
+L=4;
+B=2;
+%x、y轴上的单元以及节点数
+E_X=16;
+E_Y=8;
+
+N_in_E=4;
+
+N_X=E_X+1;
+N_Y=E_Y+1;
+%全部节点和单元数
+All_E=E_X*E_Y;
+All_N=N_X*N_Y;
+%划分节点以及单元的坐标
+dis_X2N=linspace(0,L,N_X);
+dis_Y2N=linspace(0,B,N_Y);
+
+[xpre ypre]=meshgrid(dis_X2N,dis_Y2N);
+coordinates=[xpre(:) ypre(:)];
+%节点编号
+nodes_sort=1:All_N;
+nodes_sort=reshape(nodes_sort,N_Y,N_X);
+%编号与单元联系
+N2E=zeros(All_E,N_in_E);
+N2E(:,1)=reshape(nodes_sort(1:N_Y-1,1:N_X-1),All_E,1);
+N2E(:,2)=reshape(nodes_sort(2:N_Y,1:N_X-1),All_E,1);
+N2E(:,3)=reshape(nodes_sort(2:N_Y,2:N_X),All_E,1);
+N2E(:,4)=reshape(nodes_sort(1:N_Y-1,2:N_X),All_E,1);
+%编号与坐标联系
+X=zeros(N_in_E,All_E);
+Y=zeros(N_in_E,All_E);
+
+for i=1:All_E
+    X(:,i)=coordinates(N2E(i,:),1);
+    Y(:,i)=coordinates(N2E(i,:),2);
+end
+
+patch(X,Y,'w');
+axis equal;
+%缺节点以及单元编号的显示
+
